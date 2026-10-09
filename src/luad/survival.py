@@ -136,6 +136,15 @@ def main():
 
     clinical = ["age", "female", "stage_II", "stage_III", "stage_IV", "stage_unknown"]
     d = d.dropna(subset=["age"])
+    # A category with very few patients can be absent from some cross-validation training folds, which makes
+    # the Cox model impossible to fit. If unknown stage is that rare, analyze patients with known stage only
+    # (rather than silently merging unknown into the stage I reference group).
+    n_unknown = int(d.stage_unknown.sum())
+    if n_unknown < 20:
+        d = d[d.stage != "unknown"]
+        clinical.remove("stage_unknown")
+        print(f"\nCox models: {n_unknown} patients with unknown stage excluded (too few for a separate category); "
+              f"{len(d)} patients, {int(d.os_event.sum())} deaths")
     models = {"clinical": clinical, "clinical + genomic": clinical + GENOMIC_COVARIATES}
     comparison = []
     for name, cov in models.items():

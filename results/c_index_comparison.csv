@@ -1,0 +1,3 @@
+model,covariates,cv_c_index,cv_sd,apparent_c_index
+clinical,5,0.644,0.047,0.67
+clinical + genomic,12,0.655,0.046,0.697
