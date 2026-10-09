@@ -1,0 +1,9 @@
+,count
+patients,566
+mutation rows downloaded,1100
+mutation rows excluded (not protein-altering),16
+missing or unknown stage,54
+missing overall survival time or status,61
+overall survival time <= 0,4
+missing tumor mutational burden,0
+missing genetic ancestry label,6

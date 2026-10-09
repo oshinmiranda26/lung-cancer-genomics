@@ -1,0 +1,12 @@
+characteristic,value
+Patients,566
+"Age, median (IQR)",66 (59-73)
+Female,48.6%
+Stage I,49.1%
+Stage II,21.9%
+Stage III,14.7%
+Stage IV,4.8%
+Stage unknown,9.5%
+Deaths (overall survival events),186 (32.9%)
+"Median follow-up, months",21.5
+"Tumor mutational burden, median (IQR)",6.7 (2.7-13.6)
