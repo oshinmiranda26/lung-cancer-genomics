@@ -1,0 +1,4 @@
+model,covariates,cv_c_index,cv_sd,apparent_c_index
+clinical,5,0.66,0.041,0.669
++ mutations,12,0.67,0.04,0.697
++ mutations + expression,16,0.673,0.048,0.707

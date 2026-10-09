@@ -21,6 +21,15 @@ GENES = ["EGFR", "KRAS", "TP53", "STK11", "KEAP1", "MET", "ALK", "BRAF", "ERBB2"
          "SMARCA4", "PIK3CA", "NF1", "RBM10", "CDKN2A"]
 OUT = Path("data/raw")
 
+# Gene expression panel: compact, interpretable signatures rather than all ~20,000 genes (the cohort has fewer
+# than 200 deaths, so a few signature scores are far less prone to overfitting than thousands of genes).
+SIGNATURES = {
+    "proliferation": ["MKI67", "TOP2A", "CCNB1", "CDK1", "BUB1", "AURKA", "PLK1", "MCM2", "FOXM1", "BIRC5"],
+    "cytotoxic_immune": ["CD8A", "CD8B", "GZMA", "GZMB", "PRF1", "CXCL9", "CXCL10", "IFNG", "NKG7"],
+    "nrf2_targets": ["NQO1", "AKR1C1", "AKR1C3", "GCLM", "TXNRD1", "SRXN1", "G6PD", "ME1"],
+    "immune_checkpoint": ["CD274", "PDCD1", "LAG3", "CTLA4"],
+}
+
 
 def call(path, body=None):
     url = f"{API}{path}"
@@ -74,11 +83,35 @@ def main():
         "proteinChange": m.get("proteinChange"), "mutationType": m.get("mutationType"),
         "variantType": m.get("variantType")} for m in muts])
 
+    fetch_expression()
+
     cna = call(f"/molecular-profiles/{STUDY}_gistic/discrete-copy-number/fetch"
                f"?discreteCopyNumberEventType=HOMDEL_AND_AMP&projection=SUMMARY", body)
     write_csv(OUT / "cna_drivers.csv", [{
         "sampleId": c["sampleId"], "patientId": c["patientId"], "gene": entrez.get(c["entrezGeneId"]),
         "alteration": c["alteration"]} for c in cna])  # 2 = amplification, -2 = deep deletion
+
+
+def fetch_expression():
+    """RNA-seq expression for the signature genes, from the study's RNA-seq mRNA profile."""
+    profiles = call(f"/studies/{STUDY}/molecular-profiles")
+    rna = [p["molecularProfileId"] for p in profiles if p.get("molecularAlterationType") == "MRNA_EXPRESSION"
+           and "rna_seq" in p["molecularProfileId"] and "Zscores" not in p["molecularProfileId"]]
+    if not rna:
+        raise RuntimeError("No RNA-seq expression profile found; available: "
+                           + ", ".join(p["molecularProfileId"] for p in profiles))
+    profile = sorted(rna, key=len)[0]  # the plain expression profile (shortest id), not a derived one
+    symbols = sorted({g for genes in SIGNATURES.values() for g in genes})
+    genes = call("/genes/fetch?geneIdType=HUGO_GENE_SYMBOL&projection=SUMMARY", symbols)
+    entrez = {g["entrezGeneId"]: g["hugoGeneSymbol"] for g in genes}
+    missing = set(symbols) - set(entrez.values())
+    data = call(f"/molecular-profiles/{profile}/molecular-data/fetch?projection=SUMMARY",
+                {"sampleListId": f"{STUDY}_all", "entrezGeneIds": list(entrez)})
+    write_csv(OUT / "expression_panel.csv", [{
+        "sampleId": d["sampleId"], "patientId": d["patientId"], "gene": entrez.get(d["entrezGeneId"]),
+        "value": d["value"]} for d in data])
+    print(f"Expression profile: {profile} | genes found {len(entrez)} of {len(symbols)}"
+          + (f" | not found: {sorted(missing)}" if missing else ""))
 
 
 if __name__ == "__main__":

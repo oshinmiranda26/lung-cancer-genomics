@@ -1,0 +1,12 @@
+covariate,hazard_ratio,hr_lower_95,hr_upper_95,p
+mut_TP53,1.183,0.833,1.68,0.349
+mut_KRAS,1.368,0.965,1.94,0.079
+mut_STK11,1.798,1.187,2.725,0.006
+mut_KEAP1,1.117,0.694,1.798,0.647
+mut_EGFR,1.361,0.852,2.173,0.197
+del_CDKN2A,1.139,0.787,1.648,0.489
+log_tmb,0.874,0.715,1.068,0.187
+score_proliferation,1.45,1.193,1.763,0.0
+score_cytotoxic_immune,0.976,0.722,1.319,0.873
+score_nrf2_targets,1.014,0.808,1.274,0.902
+score_immune_checkpoint,0.87,0.633,1.195,0.39

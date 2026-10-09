@@ -1,0 +1,4 @@
+comparison,expected,median_difference,direction_matches,mann_whitney_p
+nrf2_targets in KEAP1-mutant vs wild type,higher,1.73,True,3.07e-36
+cytotoxic_immune in STK11-mutant vs wild type,lower,-0.17,True,2.41e-01
+immune_checkpoint in STK11-mutant vs wild type,lower,-0.29,True,1.11e-02
