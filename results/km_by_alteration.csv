@@ -1,0 +1,9 @@
+alteration,n_altered,deaths_altered,median_os_altered,median_os_wildtype,logrank_p,fdr_q
+STK11 mutation,72,31,31.2,50.2,0.0258,0.1306
+KRAS G12C,65,26,40.6,49.3,0.0453,0.1306
+SMARCA4 mutation,42,21,34.4,50.3,0.049,0.1306
+CDKN2A deep deletion,86,40,40.6,50.3,0.0736,0.1472
+EGFR mutation,63,27,42.5,52.6,0.1017,0.1627
+TP53 mutation,252,93,42.5,52.6,0.1529,0.2039
+KRAS mutation,153,54,54.3,49.2,0.3865,0.4418
+KEAP1 mutation,92,40,49.3,49.2,0.6592,0.6592
